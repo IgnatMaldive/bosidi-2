@@ -1,11 +1,15 @@
-'use client'
+// components/Editor/Editor.tsx
+
+"use client";
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   AlignLeft,
@@ -34,7 +38,6 @@ export default function Editor() {
   const [currentFile, setCurrentFile] = React.useState("");
   const [editorContent, setEditorContent] = React.useState("");
   const [showChat, setShowChat] = React.useState(false);
-  const [isLoadModalOpen, setIsLoadModalOpen] = React.useState(false);
 
   // Load files from local storage on mount
   React.useEffect(() => {
@@ -44,9 +47,6 @@ export default function Editor() {
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleChat = () => setShowChat(!showChat);
-
-  const openLoadModal = () => setIsLoadModalOpen(true);
-  const closeLoadModal = () => setIsLoadModalOpen(false);
 
   const loadFiles = () => {
     const storedFiles = JSON.parse(localStorage.getItem("files") || "{}");
@@ -59,9 +59,7 @@ export default function Editor() {
   };
 
   const toggleTool = (tool: string) => {
-    setActiveTools((prev) =>
-      prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool]
-    );
+    setActiveTools((prev) => (prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool]));
     document.execCommand(tool); // Apply text formatting command
   };
 
@@ -118,18 +116,8 @@ export default function Editor() {
           >
             <Plus className="h-4 w-4 mr-2" /> Save
           </Button>
-          <Button
-            className={`ml-2 ${isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"} p-2 rounded-lg`}
-            onClick={openLoadModal}
-          >
-            <File className="h-4 w-4 mr-2" /> Load
-          </Button>
           <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
-            {isDarkMode ? (
-              <Sun className="h-4 w-4 text-foreground" />
-            ) : (
-              <Moon className="h-4 w-4 text-foreground" />
-            )}
+            {isDarkMode ? <Sun className="h-4 w-4 text-foreground" /> : <Moon className="h-4 w-4 text-foreground" />}
           </Button>
           <Button variant="ghost" size="icon" onClick={toggleChat}>
             <Cat className="h-4 w-4 text-foreground" />
@@ -148,9 +136,7 @@ export default function Editor() {
             <div className="p-2">
               <Input placeholder="Search files..." />
               <Button
-                className={`mt-2 w-full ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
-                }`}
+                className={`mt-2 w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"}`}
                 variant="ghost"
                 onClick={addNewFile}
               >
@@ -160,20 +146,13 @@ export default function Editor() {
             <ScrollArea className="h-[calc(100vh-10rem)]">
               <div className="p-2">
                 {Object.keys(files).map((file) => (
-                  <div
-                    key={file}
-                    className="flex items-center justify-between cursor-pointer p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-                  >
+                  <div key={file} className="flex items-center justify-between cursor-pointer p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
                     <div onClick={() => selectFile(file)} className="flex items-center">
                       <File className="h-4 w-4 mr-2 text-foreground" />
                       <span className="text-foreground">{file}</span>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteFile(file)}
-                    >
-                      <Plus className="h-4 w-4 rotate-45" />
+                    <Button variant="ghost" size="icon" onClick={() => deleteFile(file)}>
+                      <Plus className="h-4 w-4 rotate-45" /> {/* Delete button */}
                     </Button>
                   </div>
                 ))}
@@ -186,45 +165,20 @@ export default function Editor() {
             <CardHeader className="p-2 border-b">
               <TooltipProvider>
                 <div className="flex items-center gap-1">
-                  <Button
-                    variant={activeTools.includes("bold") ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => toggleTool("bold")}
-                    className="h-8 w-8"
-                  >
+                  <Button variant={activeTools.includes("bold") ? "secondary" : "ghost"} size="icon" onClick={() => toggleTool("bold")} className="h-8 w-8">
                     <Bold className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant={activeTools.includes("italic") ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => toggleTool("italic")}
-                    className="h-8 w-8"
-                  >
+                  <Button variant={activeTools.includes("italic") ? "secondary" : "ghost"} size="icon" onClick={() => toggleTool("italic")} className="h-8 w-8">
                     <Italic className="h-4 w-4" />
                   </Button>
                   <Separator orientation="vertical" className="h-6" />
-                  <Button
-                    variant={activeTools.includes("heading") ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => toggleTool("heading")}
-                    className="h-8 w-8"
-                  >
+                  <Button variant={activeTools.includes("heading") ? "secondary" : "ghost"} size="icon" onClick={() => toggleTool("heading")} className="h-8 w-8">
                     <Heading1 className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant={activeTools.includes("bullet-list") ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => toggleTool("insertUnorderedList")}
-                    className="h-8 w-8"
-                  >
+                  <Button variant={activeTools.includes("bullet-list") ? "secondary" : "ghost"} size="icon" onClick={() => toggleTool("insertUnorderedList")} className="h-8 w-8">
                     <List className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant={activeTools.includes("numbered-list") ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => toggleTool("insertOrderedList")}
-                    className="h-8 w-8"
-                  >
+                  <Button variant={activeTools.includes("numbered-list") ? "secondary" : "ghost"} size="icon" onClick={() => toggleTool("insertOrderedList")} className="h-8 w-8">
                     <ListOrdered className="h-4 w-4" />
                   </Button>
                   <Tooltip>
@@ -253,16 +207,8 @@ export default function Editor() {
       </div>
       <footer className="p-2 bg-background border-t text-sm text-muted-foreground">
         <div className="flex justify-between items-center">
-          <span>
-            Words:{" "}
-            {editorContent
-              .replace(/<[^>]+>/g, "")
-              .split(" ")
-              .filter((word) => word.length > 0).length}
-          </span>
-          <span>
-            Characters: {editorContent.replace(/<[^>]+>/g, "").length}
-          </span>
+          <span>Words: {editorContent.split(" ").filter((word) => word.length > 0).length}</span>
+          <span>Characters: {editorContent.length}</span>
         </div>
       </footer>
 
@@ -275,57 +221,10 @@ export default function Editor() {
             </Button>
           </div>
           <div className="p-3">
-            <p className="text-sm text-muted-foreground">
-              How can I assist you today?
-            </p>
+            <p className="text-sm text-muted-foreground">How can I assist you today?</p>
             <div className="mt-3">
               <Input placeholder="Type a message..." className="w-full" />
               <Button className="mt-2 w-full">Send</Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Load Modal */}
-      {isLoadModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg w-80">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Load File</h2>
-              <Button variant="ghost" size="icon" onClick={closeLoadModal}>
-                <Plus className="h-4 w-4 rotate-45 text-foreground" />
-              </Button>
-            </div>
-            <div className="max-h-60 overflow-y-auto">
-              {Object.keys(files).length > 0 ? (
-                Object.keys(files).map((file) => (
-                  <div
-                    key={file}
-                    className="flex items-center justify-between p-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer rounded"
-                    onClick={() => {
-                      selectFile(file);
-                      closeLoadModal();
-                    }}
-                  >
-                    <div className="flex items-center">
-                      <File className="h-4 w-4 mr-2 text-foreground" />
-                      <span className="text-foreground">{file}</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteFile(file);
-                      }}
-                    >
-                      <Plus className="h-4 w-4 rotate-45 text-foreground" />
-                    </Button>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-muted-foreground">No files found.</p>
-              )}
             </div>
           </div>
         </div>
