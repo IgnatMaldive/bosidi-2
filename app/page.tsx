@@ -8,10 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
-  AlignLeft,
   Bold,
   File,
-  Folder,
   Heading1,
   Italic,
   Link,
